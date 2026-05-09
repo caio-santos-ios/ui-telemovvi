@@ -2,7 +2,6 @@
 
 import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 import CompanyDropdown from "@/components/header/CompanyDropdown";
-import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { CompanyLogo } from "@/components/logoCompany/LogoCompany";
 import { useSidebar } from "@/context/SidebarContext";
@@ -10,7 +9,7 @@ import { syncAtom, userAdmin } from "@/jotai/auth/auth.jotai";
 import { calculateTimeLeft, TimeRemaining } from "@/utils/mask.util";
 import { useAtom } from "jotai";
 import Link from "next/link";
-import React, { useState ,useEffect,useRef} from "react";
+import React, { useState, useEffect, useRef} from "react";
 
 const AppHeader: React.FC = () => {
   const [sync] = useAtom(syncAtom);

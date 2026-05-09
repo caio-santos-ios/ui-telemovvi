@@ -47,7 +47,7 @@ export const ResetEmployee: TEmployee = {
     phone: "",
     whatsapp: "",
     photo: "",
-    type: "technical",
+    type: "",
     dateOfBirth: null,
     createdAt: "",
     address: ResetAddress,

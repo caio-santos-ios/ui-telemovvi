@@ -16,8 +16,9 @@ import { IconEdit } from "@/components/iconEdit/IconEdit";
 import { IconDelete } from "@/components/iconDelete/IconDelete";
 import { useModal } from "@/hooks/useModal";
 import { ModalDelete } from "@/components/modalDelete/ModalDelete";
-import { Instalation } from "@/components/instalation/Instalation";
 
+const module = "A";
+const routine = "A1";
 
 export default function CompanyTable() {
   const [_, setLoading] = useAtom(loadingAtom);
@@ -73,7 +74,7 @@ export default function CompanyTable() {
   };
 
   useEffect(() => {
-    if(permissionRead("A", "A1")) {
+    if(permissionRead(module, routine)) {
       getAll(1);
     };
   }, []);

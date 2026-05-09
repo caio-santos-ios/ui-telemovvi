@@ -4,7 +4,7 @@ import Label from "@/components/form/Label";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
-import { resolveResponse } from "@/service/config.service";
+import { onError, resolveResponse } from "@/service/config.service";
 import { ResetSignUp, TSignUp } from "@/types/auth/signUp.type";
 import { maskCNPJ, maskCPF, maskPhone } from "@/utils/mask.util";
 import { useAtom } from "jotai";
@@ -13,6 +13,9 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import Button from "../ui/button/Button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "@/schemas/auth/auth.schema";
+import { PasswordStrength } from "./PasswordStrength";
 
 export default function SignUpForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);
@@ -20,9 +23,11 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
-  const { register, handleSubmit, reset, setValue, formState: { errors }} = useForm<TSignUp>({
-    defaultValues: ResetSignUp
+  const { register, watch, handleSubmit, reset, setValue } = useForm<TSignUp>({
+    resolver: zodResolver(registerSchema)
   });
+
+  const password = watch("password") ?? "";
   
   const create: SubmitHandler<TSignUp> = async (body: TSignUp) => {
     try {
@@ -50,7 +55,7 @@ export default function SignUpForm() {
     <div className="flex flex-col flex-1 lg:w-1/2 w-full max-w-[90dvw] h-dvh overflow-y-auto no-scrollbar">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto py-4">
         <div>
-          <form onSubmit={handleSubmit(create)}>
+          <form>
             <div className="grid grid-cols-4 gap-3">
               <div className="col-span-4">
                 <Label title="Nome da empresa"/>
@@ -72,7 +77,7 @@ export default function SignUpForm() {
                   };
 
                   setValue("document", e.target.value);
-                }} type="text" className="input-erp-primary input-erp-default"/>
+                }} {...register("document")} type="text" className="input-erp-primary input-erp-default"/>
               </div>
 
               <div className="col-span-4">
@@ -103,7 +108,11 @@ export default function SignUpForm() {
                   </span>
                 </div>
               </div>
-              {/* <!-- Checkbox --> */}
+
+              <div className="col-span-4">
+                <PasswordStrength password={password} />
+              </div>
+              
               <div className="col-span-4 flex items-center gap-3">
                 <Checkbox
                   className="w-5 h-5"
@@ -122,7 +131,7 @@ export default function SignUpForm() {
                 </p>
               </div>
               <div className="col-span-4">
-                <Button type="submit" className="w-full" size="sm">Cadastrar</Button>
+                <Button type="button" className="w-full" size="sm" onClick={handleSubmit(create, onError)}>Cadastrar</Button>
               </div>
             </div>
           </form>

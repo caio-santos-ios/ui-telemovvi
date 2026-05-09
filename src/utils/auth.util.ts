@@ -1,0 +1,50 @@
+import { ResetUserLogged, TUserLogged } from "@/types/master-data/user/user.type";
+import { jwtDecode } from "jwt-decode";
+
+type JwtPayload = {
+    sub: string;
+    email: string;
+    unique_name?: string;
+};
+
+const isBrowser = typeof window !== "undefined";
+
+export const getLoggedUserId = (): string => {
+    try {
+        if (!isBrowser) return "";
+        const token = localStorage.getItem("telemovviToken") ?? "";
+        if (!token) return "";
+        const decoded = jwtDecode<JwtPayload>(token);
+        return decoded.sub ?? "";
+    } catch {
+        return "";
+    }
+};
+
+export const getUserLogged = (): TUserLogged => {
+    if (!isBrowser) return ResetUserLogged;
+    
+    const token = localStorage.getItem("telemovviToken") ?? "";
+    if (!token) return ResetUserLogged;
+    return decodedToken(token);
+};
+
+export const decodedToken = (token: string): TUserLogged => {
+    if (!token) return ResetUserLogged;
+
+    const decoded: any = jwtDecode<JwtPayload>(token);
+    
+    return {
+        id: decoded.sub,
+        name:   decoded.name,
+        email:  decoded.email,
+        photo:  decoded.photo,
+        admin:  decoded.admin == "True",
+        master: decoded.master == "True",
+        role: decoded.role,
+        companyName: decoded.companyName,
+        companyPhoto: decoded.companyPhoto,
+        storeName: decoded.storeName,
+        modules: decoded.modules
+    };
+} 

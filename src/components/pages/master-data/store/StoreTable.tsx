@@ -17,6 +17,8 @@ import { useModal } from "@/hooks/useModal";
 import { ModalDelete } from "@/components/modalDelete/ModalDelete";
 import { ResetStore, TStore } from "@/types/master-data/store/store.type";
 
+const module = "A";
+const routine = "A2";
 
 export default function StoreTable() {
   const [_, setLoading] = useAtom(loadingAtom);
@@ -72,7 +74,7 @@ export default function StoreTable() {
   };
 
   useEffect(() => {
-    if(permissionRead("A", "A2")) {
+    if(permissionRead(module, routine)) {
       getAll(1);
     };
   }, []);

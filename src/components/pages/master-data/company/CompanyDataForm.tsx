@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import DropzoneComponent from "@/components/form/form-elements/DropZone";
 import { useRouter } from "next/navigation";
+import { CompanyLogo } from "@/components/logoCompany/LogoCompany";
 
 type TProp = {
   id?: string;
@@ -26,6 +27,8 @@ export default function CompanyDataForm({id}: TProp) {
   const { register, handleSubmit, reset, setValue, watch, getValues, formState: { errors }} = useForm<TCompany>({
     defaultValues: ResetCompany
   });
+
+  const companyLogo = watch("photo");
 
   const save = async (body: TCompany) => {
     if(!body.id) {
@@ -94,13 +97,8 @@ export default function CompanyDataForm({id}: TProp) {
     }
   };
 
-  const normalizeLogoCompany = () => {
-    return `${uriBase}/${logoCompany}`;
-  };
-
   useEffect(() => {
     if(id != "create") {
-      console.log(id)
       getById(id!);
     };
   }, []);
@@ -158,10 +156,9 @@ export default function CompanyDataForm({id}: TProp) {
             <DropzoneComponent sendFile={uploadFile} title="Logo da Empresa" />
           </div>           
           <div className="col-span-6 xl:col-span-2">
-            {/* <CompanyLogo height={400} width={400} /> */}
             {
-              logoCompany ?
-              <img style={{width: `${400}px`, height: `${400}px`}} className="w-full h-full object-cover rounded-xl" src={normalizeLogoCompany()} alt="logo da empresa" />
+              companyLogo ?
+              <img style={{width: `${400}px`, height: `${400}px`}} className="w-full h-full object-cover rounded-xl" src={companyLogo} alt="logo da empresa" />
               :
               <div className="border border-dashed border-(--erp-primary-color) p-3 text-(--erp-primary-color) rounded-xl h-full flex justify-center items-center">
                 <p>Logo da Empresa</p>

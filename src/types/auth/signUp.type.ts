@@ -3,7 +3,7 @@ export type TSignUp = {
     name: string,
     email: string;
     phone: string;
-    whatsapp: string;
+    whatsapp?: string;
     password: string;
     document: string;
     privacyPolicy: boolean;

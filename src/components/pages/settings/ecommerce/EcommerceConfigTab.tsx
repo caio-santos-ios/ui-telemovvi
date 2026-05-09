@@ -36,7 +36,7 @@ export default function EcommerceConfigTab() {
     if (typeof window !== "undefined") {
       const base = window.location.origin;
       // pega plan/company/store do localStorage
-      // const plan = localStorage.getItem("telemovviToken") ? "configurado" : "";
+      // const plan = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`) ? "configurado" : "";
       const plan = watch("plan");
       const company = watch("company");
       const store = watch("store");

@@ -5,16 +5,15 @@ import { Dropdown } from "../ui/dropdown/Dropdown";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { useRouter } from "next/navigation";
 import { useAtom } from "jotai";
-import { syncAtom, userAdmin, userLoggerAtom } from "@/jotai/auth/auth.jotai";
-import { api, uriBase } from "@/service/api.service";
+import { syncAtom, userAdmin, userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { MdSync } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
-import { configApi, removeLocalStorage, resolveResponse, saveLocalStorage } from "@/service/config.service";
+import { removeLocalStorage } from "@/service/config.service";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 
 export default function UserDropdown() {
   const [_, setIsLoading] = useAtom(loadingAtom);
-  const [userLogger, setUserLogger] = useAtom(userLoggerAtom);
+  const [userLogged, setUserLogged] = useAtom(userLoggedAtom);
   const [isAdmin, setIsAdmin] = useAtom(userAdmin);
   const [sync, setSync] = useAtom(syncAtom)
   const [isOpen, setIsOpen] = useState(false);
@@ -36,28 +35,28 @@ export default function UserDropdown() {
   };
 
   const handlerSync = async () => {
-    try {
-      setIsLoading(true);
-      const {data} = await api.get(`/users/logged`, configApi());
-      const result = data.result.data;
+    // try {
+    //   setIsLoading(true);
+    //   const {data} = await api.get(`/users/logged`, configApi());
+    //   const result = data.result.data;
       
-      setUserLogger({
-        name: result.name,
-        email: result.email,
-        photo: result.photo,
-        nameCompany: result.nameCompany,
-        nameStore: result.nameStore,
-        typeUser: ""
-      });
+    //   setUserLogged({
+    //     name: result.name,
+    //     email: result.email,
+    //     photo: result.photo,
+    //     nameCompany: result.nameCompany,
+    //     nameStore: result.nameStore,
+    //     typeUser: ""
+    //   });
   
-      saveLocalStorage(result);
-      setSync(!sync);
-      setIsAdmin(result.admin);
-    } catch (error) {
-      resolveResponse(error);
-    } finally {
-      setIsLoading(false);
-    }
+    //   saveLocalStorage(result);
+    //   setSync(!sync);
+    //   setIsAdmin(result.admin);
+    // } catch (error) {
+    //   resolveResponse(error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   const normalizeName = (name: string) => {
@@ -69,16 +68,16 @@ export default function UserDropdown() {
       <button onClick={toggleDropdown} className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle">
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
           {
-            userLogger.photo ?
-            <img className="w-full h-full object-cover rounded-full" src={userLogger.photo} alt="foto do usuário" />
+            userLogged.photo ?
+            <img className="w-full h-full object-cover rounded-full" src={userLogged.photo} alt="foto do usuário" />
             :
-            <p className="font-bold text-3xl flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-gray-700 h-11 w-11 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">{normalizeName(userLogger.name)}</p>
+            <p className="font-bold text-3xl flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-gray-700 h-11 w-11 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">{normalizeName(userLogged.name)}</p>
           }
         </span>
 
         <div className="flex flex-col">
-          <p className="block mr-1 font-medium text-theme-sm text-start">{userLogger.name}</p>
-          <p className="block mr-1 font-normal text-theme-sm text-gray-500 text-start">{userLogger.email}</p>
+          <p className="block mr-1 font-medium text-theme-sm text-start">{userLogged.name}</p>
+          <p className="block mr-1 font-normal text-theme-sm text-gray-500 text-start">{userLogged.email}</p>
         </div>
 
         <svg
@@ -104,10 +103,10 @@ export default function UserDropdown() {
       <Dropdown isOpen={isOpen} onClose={closeDropdown} className="absolute right-0 mt-[17px] flex w-[260px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-800 dark:bg-gray-dark">
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {userLogger.name}
+            {userLogged.name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {userLogger.email}
+            {userLogged.email}
           </span>
         </div>
 

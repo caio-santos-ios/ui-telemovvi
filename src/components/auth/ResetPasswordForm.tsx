@@ -5,7 +5,7 @@ import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { resolveResponse } from "@/service/config.service";
-import { ResetPassword, TResetPassword } from "@/types/auth/ResetPassword.type";
+import { ResetPassword, TResetPassword } from "@/types/auth/resetPassword.type";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

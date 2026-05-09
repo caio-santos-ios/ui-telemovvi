@@ -185,8 +185,6 @@ export default function EmployeeDataForm({id}: TProp) {
             <Label title="Data de Nascimento" required={false}/>
             <input placeholder="Data de Nascimento" {...register("dateOfBirth")} type="date" className="input-erp-primary input-erp-default"/>
           </div>
-          
-          
         </div>
       </ComponentCard>
       <Button onClick={() => save({...getValues()})} type="submit" className="w-full xl:max-w-20 mt-2" size="sm">Salvar</Button>

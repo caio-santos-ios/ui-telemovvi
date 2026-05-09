@@ -7,9 +7,10 @@ import { useSidebar } from "../context/SidebarContext";
 import { ChevronDownIcon } from "../icons/index";
 import { useAtom } from "jotai";
 import { iconAtom } from "@/jotai/global/icons.jotai";
-import { userAdmin } from "@/jotai/auth/auth.jotai";
+import { userAdmin, userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { CompanyLogo } from "@/components/logoCompany/LogoCompany";
 import { NavItem } from "@/types/global/menu.type";
+import { menuRoutinesAtom } from "@/jotai/global/menu.jotai";
 
 const staticNavItems: NavItem[] = [
   {
@@ -28,12 +29,12 @@ const staticNavItems: NavItem[] = [
     authorized: false,
     code: "A",
     subItems: [
-      {name: "Empresas", path: "/master-data/companies", code: "A1", pro: false, authorized: false },
-      {name: "Lojas", path: "/master-data/stores", code: "A2", pro: false, authorized: false },
-      {name: "Profissionais", path: "/master-data/employees", code: "A3", pro: false, authorized: false },
-      {name: "Clientes", path: "/master-data/customers", code: "A4", pro: false, authorized: false },
-      {name: "Fornecedores", path: "/master-data/suppliers", code: "A5", pro: false, authorized: false },
-      {name: "Permissões de Usuário", path: "/master-data/profile-permission", code: "F1", pro: false, authorized: false },
+      {name: "Empresas",          path: "/master-data/companies",           code: "A1", pro: false, authorized: false },
+      {name: "Lojas",             path: "/master-data/stores",              code: "A2", pro: false, authorized: false },
+      {name: "Profissionais",     path: "/master-data/employees",           code: "A3", pro: false, authorized: false },
+      {name: "Clientes",          path: "/master-data/customers",           code: "A4", pro: false, authorized: false },
+      {name: "Fornecedores",      path: "/master-data/suppliers",           code: "A5", pro: false, authorized: false },
+      {name: "Perfil de Usuário", path: "/master-data/profile-permission",  code: "F1", pro: false, authorized: false },
     ]
   },
   {
@@ -42,10 +43,10 @@ const staticNavItems: NavItem[] = [
     authorized: false,
     code: "B",
     subItems: [
-      {name: "Produtos", path: "/product/products", code: "B1", pro: false, authorized: false },
-      {name: "Categorias", path: "/product/categories", code: "B2", pro: false, authorized: false },
-      {name: "Grupo de Produtos", path: "/product/brands", code: "B4", pro: false, authorized: false },
-      {name: "Variações", path: "/product/variations", code: "B5", pro: false, authorized: false }
+      {name: "Produtos",          path: "/product/products",    code: "B1", pro: false, authorized: false },
+      {name: "Categorias",        path: "/product/categories",  code: "B2", pro: false, authorized: false },
+      {name: "Grupo de Produtos", path: "/product/brands",      code: "B4", pro: false, authorized: false },
+      {name: "Variações",         path: "/product/variations",  code: "B5", pro: false, authorized: false }
     ]
   },
   {
@@ -110,6 +111,9 @@ const AppSidebar: React.FC = () => {
   const pathname = usePathname();
   const [icons] = useAtom(iconAtom);
   const [isAdmin] = useAtom(userAdmin);
+  const [userLogged] = useAtom(userLoggedAtom);
+  const [menu] = useAtom(menuRoutinesAtom);
+
   const [openSubmenu, setOpenSubmenu] = useState<{ index: number } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>({});
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -125,25 +129,17 @@ const AppSidebar: React.FC = () => {
   const getAuthorizedMenu = useCallback(() => {
     if (typeof window === "undefined") return [];
 
-    const modulesStr = localStorage.getItem("telemovviModules");
-    const masterStr = localStorage.getItem("telemovviMaster");
-    const isMaster = masterStr ? masterStr == "true" : false;
-
-    if (!modulesStr) return staticNavItems;
-
-    const modules: any[] = JSON.parse(modulesStr);
-
-    return staticNavItems.map((item) => {
+    return menu.map((item) => {
       const newItem = { ...item };
 
-      if(isMaster) {
+      if(userLogged.admin || userLogged.master) {
         newItem.authorized = true;
         newItem.subItems = newItem.subItems?.map((sub) => ({
           ...sub,
           authorized: true
         }));
       } else {
-        const foundModule = modules.find((m: any) => m.code === newItem.code);
+        const foundModule = userLogged.modules.find((m: any) => m.code === newItem.code);
   
         if (foundModule && foundModule.routines.length > 0) {
           newItem.authorized = true;
@@ -198,7 +194,7 @@ const AppSidebar: React.FC = () => {
           <ul className="flex flex-col gap-4">
             {filteredNav.map((nav, index) => {
               const IconComponent = nav.icon ? icons[nav.icon] : null;
-              const hasAccess = nav.authorized || isAdmin;
+              const hasAccess = nav.authorized || userLogged.admin || userLogged.master;
 
               if (!hasAccess) return null;
 
@@ -226,7 +222,7 @@ const AppSidebar: React.FC = () => {
                         className="overflow-hidden transition-all duration-300" 
                         style={{ height: !isMobileOpen && !isExpanded && !isHovered ? "0px" : openSubmenu?.index === index ? `${subMenuHeight[`${index}`]}px` : "0px" }}>
                         <ul className="mt-2 space-y-1 ml-9">
-                          {nav.subItems.map((subItem) => (subItem.authorized || isAdmin) && (
+                          {nav.subItems.map((subItem) => (subItem.authorized || userLogged.admin || userLogged.master) && (
                             <li key={subItem.name}>
                               <Link 
                                 href={subItem.path} 

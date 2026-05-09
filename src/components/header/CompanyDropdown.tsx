@@ -3,16 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { Dropdown } from "../ui/dropdown/Dropdown";
 import { useAtom } from "jotai";
-import { userLoggerAtom } from "@/jotai/auth/auth.jotai";
+import { userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { api } from "@/service/api.service";
-import { configApi, resolveResponse, saveLocalStorage } from "@/service/config.service";
+import { configApi, resolveResponse } from "@/service/config.service";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { TStore } from "@/types/master-data/store/store.type";
 import { storeLoggedAtom } from "@/jotai/global/store.jotai";
 
 export default function CompanyDropdown() {
   const [_, setIsLoading] = useAtom(loadingAtom);
-  const [userLogger, setUserLogger] = useAtom(userLoggerAtom);
+  const [userLogged, setUserLogged] = useAtom(userLoggedAtom);
   const [storeLogged, setStoreLogged] = useAtom(storeLoggedAtom);
   const [isOpen, setIsOpen] = useState(false);
   const [stores, setStore] = useState<TStore[]>([]);
@@ -42,26 +42,26 @@ export default function CompanyDropdown() {
   };
 
   const handlerSync = async () => {
-    try {
-      setIsLoading(true);
-      const {data} = await api.get(`/users/logged`, configApi());
-      const result = data.result.data;
+    // try {
+    //   setIsLoading(true);
+    //   const {data} = await api.get(`/users/logged`, configApi());
+    //   const result = data.result.data;
       
-      setUserLogger({
-        name: result.name,
-        email: result.email,
-        photo: result.photo,
-        nameCompany: result.nameCompany,
-        nameStore: result.nameStore,
-        typeUser: ""
-      });
+    //   setUserLogged({
+    //     name: result.name,
+    //     email: result.email,
+    //     photo: result.photo,
+    //     nameCompany: result.nameCompany,
+    //     nameStore: result.nameStore,
+    //     typeUser: ""
+    //   });
   
-      saveLocalStorage(result);
-    } catch (error) {
-      resolveResponse(error);
-    } finally {
-      setIsLoading(false);
-    }
+    //   saveLocalStorage(result);
+    // } catch (error) {
+    //   resolveResponse(error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
   
   const refreshToken = async () => {
@@ -96,8 +96,8 @@ export default function CompanyDropdown() {
     <div className="relative min-w-36">
       <button onClick={toggleDropdown} className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle">
         <div className="flex flex-col">
-          <p className="block mr-1 font-medium text-theme-sm text-start">{userLogger.nameCompany}</p>
-          <p className="block mr-1 font-normal text-theme-sm text-gray-500 text-start">Loja: {userLogger.nameStore ? userLogger.nameStore : 'Matriz'}</p>
+          <p className="block mr-1 font-medium text-theme-sm text-start">{userLogged.companyName}</p>
+          <p className="block mr-1 font-normal text-theme-sm text-gray-500 text-start">Loja: {userLogged.storeName ? userLogged.storeName : 'Matriz'}</p>
         </div>
 
         <svg className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${ isOpen ? "rotate-180" : "" }`} width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg" >

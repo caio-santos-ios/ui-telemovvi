@@ -4,14 +4,12 @@ import ComponentCard from "@/components/common/ComponentCard";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
-import { api, uriBase } from "@/service/api.service";
+import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
 import { maskCNPJ, maskPhone } from "@/utils/mask.util";
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import "./style.css";
-import DropzoneComponent from "@/components/form/form-elements/DropZone";
 import { useRouter } from "next/navigation";
 import { ResetStore, TStore } from "@/types/master-data/store/store.type";
 

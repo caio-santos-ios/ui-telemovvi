@@ -9,18 +9,24 @@ import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { resolveResponse, saveLocalStorage } from "@/service/config.service";
+import { onError, resolveResponse, saveLocalStorage } from "@/service/config.service";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { useAtom } from "jotai";
 import { Logo } from "../logo/Logo";
+import { TCompany } from "@/types/master-data/company/company.type";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema } from "@/schemas/auth/auth.schema";
 
 export default function SignInForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);
-  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+  const [result, setResult] = useState<any>({companies: []});
+  const [companyId, setCompanyId] = useState("");
+  const router = useRouter();
   
-  const { register, handleSubmit, reset, formState: { errors }} = useForm<TSignIn>();
+  const { register, handleSubmit } = useForm<TSignIn>({
+    resolver: zodResolver(loginSchema)
+  });
   
   const login: SubmitHandler<TSignIn> = async (body: TSignIn) => {
     try {
@@ -28,7 +34,31 @@ export default function SignInForm() {
       const {data} = await api.post(`/auth/login`, body);
       const result = data.result.data;
       
-      saveLocalStorage(result, true);
+      if(result.companies.length > 1) {
+        setCompanyId(result.companies[0].id)
+        setResult(result);
+      } else {
+        saveLocalStorage(result, true);
+        if(result.admin) {
+          router.push("/dashboard");
+        } else {
+          router.push("/master-data/profile");
+        };
+      }
+    } catch (error) {
+      resolveResponse(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const enter = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await api.put(`/auth/select-company-token`, {id: result.id, company: companyId});
+      const response = data.result.data;
+      saveLocalStorage(response, true);
+
       if(result.admin) {
         router.push("/dashboard");
       } else {
@@ -48,7 +78,7 @@ export default function SignInForm() {
           <Logo width={250} height={100}/>
         </div>
         <div>
-          <form onSubmit={handleSubmit(login)}>
+          <form>
             <div className="space-y-6">
               <div>
                 <Label title="E-mail"/>
@@ -68,22 +98,37 @@ export default function SignInForm() {
                 </div>
               </div>
 
+              {
+                result.companies.length > 1 && (
+                  <div>
+                    <Label title="Empresa"/>
+                    <select onChange={(e) => {
+                      setCompanyId(e.target.value);
+                    }} className="h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 text-gray-800 dark:bg-dark-900">
+                      {
+                        result.companies.map((company: TCompany) => {
+                          return <option key={company.id} value={company.id} className="text-gray-700 dark:bg-gray-900 dark:text-gray-400">{company.tradeName}</option>
+                        })
+                      }
+                    </select>
+                  </div>
+                )
+              }
+
               <div className="flex items-center justify-between">
-                {/* <div className="flex items-center gap-3">
-                  <Checkbox checked={isChecked} onChange={setIsChecked} />
-                  <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
-                    Mantenha-me conectado
-                  </span>
-                </div> */}
                 <Link
                   href="/reset-password"
-                  className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                >
+                  className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400">
                   Esqueceu sua senha?
                 </Link>
               </div>
               <div>
-                <Button type="submit" className="w-full" size="sm">Entrar</Button>
+                {
+                  result.companies.length <= 1 && <Button type="button" className="w-full" size="sm" onClick={handleSubmit(login, onError)}>Entrar</Button>
+                }
+                {
+                  result.companies.length > 1 && <Button type="button" className="w-full" size="sm" onClick={enter}>Entrar</Button>
+                }
               </div>
             </div>
           </form>

@@ -3,7 +3,7 @@ import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import Label from "../form/Label";
-import { userLoggerAtom } from "@/jotai/auth/auth.jotai";
+import { userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { useAtom } from "jotai";
 import { useForm } from "react-hook-form";
 import { maskPhone } from "@/utils/mask.util";
@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { ResetUserProfile, TUserProfile } from "@/types/master-data/user/user.type";
 
 export default function UserMetaCard() {
-  const [userLogger, setUserLogger] = useAtom(userLoggerAtom);
+  const [userLogger, setUserLogger] = useAtom(userLoggedAtom);
   const [_, setIsLoading] = useAtom(loadingAtom);
   const { isOpen, openModal, closeModal } = useModal();
 
@@ -63,39 +63,39 @@ export default function UserMetaCard() {
   };
 
   const getUser = async () => {
-    try {
-      setIsLoading(true);
-      const typeUser = localStorage.getItem("typeUser");
-      const uri = typeUser ? typeUser : "";
+    // try {
+    //   setIsLoading(true);
+    //   const typeUser = localStorage.getItem("typeUser");
+    //   const uri = typeUser ? typeUser : "";
 
-      const {data} = await api.get(`/${['technical', 'seller'].includes(uri) ? 'employees' : 'users'}/logged`, configApi());
-      const result = data.result.data;
+    //   const {data} = await api.get(`/${['technical', 'seller'].includes(uri) ? 'employees' : 'users'}/logged`, configApi());
+    //   const result = data.result.data;
       
-      if(result.photo) {
-        setUserLogger({
-          name: result.name,
-          email: result.email,
-          photo: result.photo,
-          nameCompany: result.nameCompany,
-          nameStore: result.nameStore,
-          typeUser: result.typeUser
-        });
-      };
+    //   if(result.photo) {
+    //     setUserLogger({
+    //       name: result.name,
+    //       email: result.email,
+    //       photo: result.photo,
+    //       nameCompany: result.nameCompany,
+    //       nameStore: result.nameStore,
+    //       typeUser: result.typeUser
+    //     });
+    //   };
   
-      reset({
-        id: result.id,
-        name: result.name,
-        email: result.email,
-        phone: result.phone,
-        whatsapp: result.whatsapp,
-        photo: result.photo,
-        address: result.address
-      });
-    } catch (error) {
-      resolveResponse(error);
-    } finally {
-      setIsLoading(false);
-    }
+    //   reset({
+    //     id: result.id,
+    //     name: result.name,
+    //     email: result.email,
+    //     phone: result.phone,
+    //     whatsapp: result.whatsapp,
+    //     photo: result.photo,
+    //     address: result.address
+    //   });
+    // } catch (error) {
+    //   resolveResponse(error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   useEffect(() => {

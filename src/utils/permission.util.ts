@@ -1,19 +1,21 @@
+import { decodedToken } from "./auth.util";
+
 export const permissionRead = (module: string, subModule: string) => {
-    const adminStr = localStorage.getItem("telemovviAdmin");
+    const token = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`);
+    
+    if(!token) return false;
 
-    if(adminStr == "true") return true;
+    const user = decodedToken(token);
 
-    const modulesStr = localStorage.getItem("telemovviModules");
-    if(modulesStr) {
-        const modules = JSON.parse(modulesStr)
-        const currentModule = modules.findIndex((m: any) => m.code == module);
-        if(currentModule >= 0) {
-            const currentRoutine = modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
-            
-            if(currentRoutine >= 0) {
+    if(user.admin || user.master) return true;
 
-                return modules[currentModule].routines[currentRoutine].permissions.read;
-            };
+    const currentModule = user.modules.findIndex((m: any) => m.code == module);
+    if(currentModule >= 0) {
+        const currentRoutine = user.modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
+        
+        if(currentRoutine >= 0) {
+
+            return user.modules[currentModule].routines[currentRoutine].permissions.read;
         };
     };
 
@@ -21,21 +23,21 @@ export const permissionRead = (module: string, subModule: string) => {
 };
 
 export const permissionCreate = (module: string, subModule: string) => {
-    const adminStr = localStorage.getItem("telemovviAdmin");
+    const token = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`);
+    
+    if(!token) return false;
 
-    if(adminStr == "true") return true;
+    const user = decodedToken(token);
 
-    const modulesStr = localStorage.getItem("telemovviModules");
-    if(modulesStr) {
-        const modules = JSON.parse(modulesStr)
-        const currentModule = modules.findIndex((m: any) => m.code == module);
-        if(currentModule >= 0) {
-            const currentRoutine = modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
-            
-            if(currentRoutine >= 0) {
+    if(user.admin || user.master) return true;
 
-                return modules[currentModule].routines[currentRoutine].permissions.create;
-            };
+    const currentModule = user.modules.findIndex((m: any) => m.code == module);
+    if(currentModule >= 0) {
+        const currentRoutine = user.modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
+        
+        if(currentRoutine >= 0) {
+
+            return user.modules[currentModule].routines[currentRoutine].permissions.read;
         };
     };
 
@@ -43,21 +45,21 @@ export const permissionCreate = (module: string, subModule: string) => {
 };
 
 export const permissionUpdate = (module: string, subModule: string) => {
-    const adminStr = localStorage.getItem("telemovviAdmin");
-
-    if(adminStr == "true") return true;
+    const token = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`);
     
-    const modulesStr = localStorage.getItem("telemovviModules");
-    if(modulesStr) {
-        const modules = JSON.parse(modulesStr)
-        const currentModule = modules.findIndex((m: any) => m.code == module);
-        if(currentModule >= 0) {
-            const currentRoutine = modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
-            
-            if(currentRoutine >= 0) {
+    if(!token) return false;
 
-                return modules[currentModule].routines[currentRoutine].permissions.update;
-            };
+    const user = decodedToken(token);
+
+    if(user.admin || user.master) return true;
+
+    const currentModule = user.modules.findIndex((m: any) => m.code == module);
+    if(currentModule >= 0) {
+        const currentRoutine = user.modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
+        
+        if(currentRoutine >= 0) {
+
+            return user.modules[currentModule].routines[currentRoutine].permissions.read;
         };
     };
 
@@ -65,21 +67,21 @@ export const permissionUpdate = (module: string, subModule: string) => {
 };
 
 export const permissionDelete = (module: string, subModule: string) => {
-    const adminStr = localStorage.getItem("telemovviAdmin");
+    const token = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`);
+    
+    if(!token) return false;
 
-    if(adminStr == "true") return true;
+    const user = decodedToken(token);
 
-    const modulesStr = localStorage.getItem("telemovviModules");
-    if(modulesStr) {
-        const modules = JSON.parse(modulesStr)
-        const currentModule = modules.findIndex((m: any) => m.code == module);
-        if(currentModule >= 0) {
-            const currentRoutine = modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
-            
-            if(currentRoutine >= 0) {
+    if(user.admin || user.master) return true;
 
-                return modules[currentModule].routines[currentRoutine].permissions.delete;
-            };
+    const currentModule = user.modules.findIndex((m: any) => m.code == module);
+    if(currentModule >= 0) {
+        const currentRoutine = user.modules[currentModule].routines.findIndex((r: any) => r.code == subModule);
+        
+        if(currentRoutine >= 0) {
+
+            return user.modules[currentModule].routines[currentRoutine].permissions.read;
         };
     };
 

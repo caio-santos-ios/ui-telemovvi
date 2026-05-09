@@ -3,24 +3,25 @@
 import { useAtom } from "jotai";
 import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { userAdmin, userLoggerAtom } from "@/jotai/auth/auth.jotai";
-import { ResetUserLogged } from "@/types/user/user.type";
+import { userAdmin, userLoggedAtom } from "@/jotai/auth/auth.jotai";
+import { ResetUserLogged, TUserLogged } from "@/types/master-data/user/user.type";
 import { removeLocalStorage } from "@/service/config.service";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
+import { decodedToken } from "@/utils/auth.util";
 
 export const Autorization = () => {
     const [_, setIsLoading] = useAtom(loadingAtom);
-    const [__, setUserLogger] = useAtom(userLoggerAtom);
+    const [__, setUserLogged] = useAtom(userLoggedAtom);
     const [___, setIsAdmin] = useAtom(userAdmin);
     const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
-        const localToken = localStorage.getItem("telemovviToken");
+        const localToken = localStorage.getItem(`${process.env.NEXT_PUBLIC_ENVIRONMENT}TelemovviToken`);
         const token = localToken ? localToken : "";
 
         if(!token) {
-            setUserLogger(ResetUserLogged);
+            setUserLogged(ResetUserLogged);
             setIsLoading(false);
 
             if(!["reset-password", "signup", "new-code-confirm", "confirm-account"].includes(pathname.split("/")[1])) {
@@ -29,26 +30,10 @@ export const Autorization = () => {
                 setIsAdmin(false);
             };
         } else {
-            const admin = localStorage.getItem("telemovviAdmin");
-            const name = localStorage.getItem("telemovviName");
-            const email = localStorage.getItem("telemovviEmail");
-            const photo = localStorage.getItem("telemovviPhoto");
-            const nameCompany = localStorage.getItem("telemovviNameCompany");
-            const nameStore = localStorage.getItem("telemovviNameStore");
-            const typeUser = localStorage.getItem("telemovviTypeUser");
+            const user: TUserLogged = decodedToken(token);
+            setUserLogged(user);
 
-            setUserLogger({
-                name: name ? name : "",
-                email: email ? email : "",
-                photo: photo ? photo : "",
-                nameCompany: nameCompany ? nameCompany : "",
-                nameStore: nameStore ? nameStore : "",
-                typeUser: typeUser ? typeUser : ""
-            });
-            
-            setIsAdmin(admin == 'true');
-
-            if(admin == "true") {
+            if(user.admin || user.master) {
                 if(pathname == "/" || pathname == "/reset-password") {
                     router.push("/dashboard");
                 };

@@ -4,7 +4,7 @@ import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
 import Button from "../ui/button/Button";
 import { useAtom } from "jotai";
-import { userLoggerAtom } from "@/jotai/auth/auth.jotai";
+import { userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { configApi, resolveResponse } from "@/service/config.service";
@@ -15,7 +15,7 @@ import Label from "../form/Label";
 import axios from "axios";
 
 export default function UserAddressCard() {
-  const [userLogger, setUserLogger] = useAtom(userLoggerAtom);
+  const [userLogger, setUserLogger] = useAtom(userLoggedAtom);
   const [_, setIsLoading] = useAtom(loadingAtom);
   const { isOpen, openModal, closeModal } = useModal();
 

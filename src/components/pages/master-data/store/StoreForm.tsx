@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import StoreAddressForm from "./StoreAddressForm";
 import { ResetStore, TStore } from "@/types/master-data/store/store.type";
 import StoreDataForm from "./StoreDataForm";
-import "./style.css";
 
 type TProp = {
   id?: string;
