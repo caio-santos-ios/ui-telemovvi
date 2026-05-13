@@ -12,10 +12,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import Button from "../ui/button/Button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "@/schemas/auth/auth.schema";
 import { PasswordStrength } from "./PasswordStrength";
+import Button from "@/components/ui/button/Button";
 
 export default function SignUpForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);

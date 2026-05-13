@@ -12,6 +12,9 @@ export type TUserLogged = {
     companyPhoto: string;
     storeName: string;
     modules: any[];
+    planSubscriber: boolean;
+    planType: string;
+    planExpirationDate: any;
 }
 
 export const ResetUserLogged: TUserLogged = {
@@ -25,7 +28,10 @@ export const ResetUserLogged: TUserLogged = {
     companyName: "",
     companyPhoto: "",
     storeName: "",
-    modules: []
+    modules: [],
+    planSubscriber: false,
+    planType: "free",
+    planExpirationDate: ""
 }
 
 export type TUserProfile = {

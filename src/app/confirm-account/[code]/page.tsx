@@ -1,4 +1,4 @@
-import CorfirmAccountLink from "@/components/auth/CorfirmAccountLink";
+import CorfirmAccountLink from "@/components/pages/auth/CorfirmAccountLink";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

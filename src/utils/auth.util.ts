@@ -33,7 +33,7 @@ export const decodedToken = (token: string): TUserLogged => {
     if (!token) return ResetUserLogged;
 
     const decoded: any = jwtDecode<JwtPayload>(token);
-    
+    console.log(decoded)
     return {
         id: decoded.sub,
         name:   decoded.name,
@@ -45,6 +45,9 @@ export const decodedToken = (token: string): TUserLogged => {
         companyName: decoded.companyName,
         companyPhoto: decoded.companyPhoto,
         storeName: decoded.storeName,
-        modules: decoded.modules
+        modules: decoded.modules,
+        planSubscriber: decoded.planSubscriber == "True",
+        planType: decoded.planType,
+        planExpirationDate: decoded.planExpirationDate
     };
 } 

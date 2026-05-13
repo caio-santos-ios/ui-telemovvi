@@ -106,7 +106,7 @@ export default function UserDropdown() {
             {userLogged.name}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {userLogged.email}
+            {userLogged.email.length > 36 ? userLogged.email.slice(0, 36) + '...' : userLogged.email}
           </span>
         </div>
 

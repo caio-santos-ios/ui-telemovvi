@@ -12,10 +12,10 @@ import { useRouter } from "next/navigation";
 import { onError, resolveResponse, saveLocalStorage } from "@/service/config.service";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { useAtom } from "jotai";
-import { Logo } from "../logo/Logo";
 import { TCompany } from "@/types/master-data/company/company.type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/schemas/auth/auth.schema";
+import { Logo } from "@/components/logo/Logo";
 
 export default function SignInForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);

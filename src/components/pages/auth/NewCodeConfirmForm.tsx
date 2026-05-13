@@ -1,6 +1,7 @@
 "use client";
 
 import Label from "@/components/form/Label";
+import Button from "@/components/ui/button/Button";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
 import { resolveResponse } from "@/service/config.service";
@@ -8,7 +9,6 @@ import { ResetNewCodeConfirm, TNewCodeConfirm } from "@/types/auth/newCodeConfir
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-import Button from "../ui/button/Button";
 
 export default function NewCodeConfirmForm() {
   const [_, setIsLoading] = useAtom(loadingAtom);

@@ -1,6 +1,7 @@
 "use client";
 
 import Label from "@/components/form/Label";
+import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import { loadingAtom } from "@/jotai/global/loading.jotai";
 import { api } from "@/service/api.service";
@@ -11,7 +12,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import Button from "../ui/button/Button";
 
 type TProps = {
   code?: string;

@@ -5,18 +5,17 @@ import CompanyDropdown from "@/components/header/CompanyDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { CompanyLogo } from "@/components/logoCompany/LogoCompany";
 import { useSidebar } from "@/context/SidebarContext";
-import { syncAtom, userAdmin } from "@/jotai/auth/auth.jotai";
+import { userLoggedAtom } from "@/jotai/auth/auth.jotai";
 import { calculateTimeLeft, TimeRemaining } from "@/utils/mask.util";
 import { useAtom } from "jotai";
 import Link from "next/link";
 import React, { useState, useEffect, useRef} from "react";
 
 const AppHeader: React.FC = () => {
-  const [sync] = useAtom(syncAtom);
-  const [isAdmin] = useAtom(userAdmin);  
-  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
-  const [typePlan, setTypePlan] = useState<string>("");
+  const [userLogged] = useAtom(userLoggedAtom);
   const [timeLeft, setTimeLeft] = useState<TimeRemaining | null>(null);
+
+  const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const { isMobileOpen, isExpanded, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
   const handleToggle = () => {
@@ -34,21 +33,14 @@ const AppHeader: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const storedDate = localStorage.getItem("telemovviExpirationDate");
-
-    if (!storedDate) return;
-
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(storedDate));
+      setTimeLeft(calculateTimeLeft(userLogged.planExpirationDate));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [userLogged.id]);
 
   useEffect(() => {
-    const typePlan = localStorage.getItem("telemovviTypePlan");
-    if(typePlan) setTypePlan(typePlan);
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
@@ -67,7 +59,7 @@ const AppHeader: React.FC = () => {
     <header className="sticky top-0 flex flex-col w-full bg-white border-gray-200 z-1 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
       <div className={`xl:hidden h-12 flex items-center justify-center border-b border-gray-200 dark:border-gray-800`}>
         {
-          typePlan == "free" && 
+          userLogged.planType == "free" && userLogged.planSubscriber && 
           <div className="flex items-center gap-3">
             <Link href="/plans" className="flex bg-brand-500 text-brand-200 px-4 h-10 font-bold justify-center items-center rounded-lg">
               <span>Assinar Plano</span>
@@ -92,7 +84,7 @@ const AppHeader: React.FC = () => {
           </button>
           
           {
-            typePlan == "free" && 
+            userLogged.planType == "free" && userLogged.planSubscriber && 
             <div className="hidden xl:flex items-center gap-3">
               <Link href="/plans" className="flex bg-brand-500 text-brand-200 px-4 h-10 font-bold justify-center items-center rounded-lg">
                 <span>Assinar Plano</span>
@@ -103,8 +95,8 @@ const AppHeader: React.FC = () => {
           }
 
           {
-            typePlan != "free" && 
-            <Link href={`${isAdmin ? '/dashboard' : '/master-data/profile'}`} className="lg:hidden">
+            userLogged.planType != "free" && 
+            <Link href={`${userLogged.admin || userLogged.master ? '/dashboard' : '/master-data/profile'}`} className="lg:hidden">
               <CompanyLogo height={100} width={100}/>
             </Link>
           }
